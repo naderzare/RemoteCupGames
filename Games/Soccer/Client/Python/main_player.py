@@ -6,7 +6,6 @@ from Games.Soccer.Client.Python.World import Agent
 
 
 def is_kickable(agent: Agent, wm: World) -> bool:
-    print("dist:", agent.pos().dist(wm.ball().pos()), ", ", agent.kickable_r)
     if agent.pos().dist(wm.ball().pos()) > agent.kickable_r:
         return False
     return True
@@ -15,14 +14,16 @@ def is_kickable(agent: Agent, wm: World) -> bool:
 def do_move(wm: World):
     return GoToPoint(Vector2D(0, 0), 1).execute(wm.self())
 
+def do_move2(wm: World):
+    return GoToPoint(Vector2D(250, 150), 1).execute(wm.self())
 
 def do_kick(wm: World):
     return KickToPoint(Vector2D(0, 0), 1).execute(wm.self())
 
 
 def get_action(wm: World):
-    print("self_pos:", wm.self().pos())
-    print("ball_pos:", wm.ball().pos())
+    if wm.self_id != 1:
+        return do_move2(wm)
     if is_kickable(wm.self(), wm):
         return do_move(wm)
     return do_kick(wm)

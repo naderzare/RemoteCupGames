@@ -47,6 +47,7 @@ class Agent(Object):
     def __init__(self):
         super().__init__()
         self.team_id: int = None
+        self.id: int = -1
         self.kickable_r = 0
 
     def more_data(self, data: dict):
@@ -60,15 +61,16 @@ class World:
         self.M_agents: list = []
         self.M_cycle: int = 0
         self.self_id: int = 0
+        self.self_key = None
 
     def set_id(self, self_id):
         self.self_id = self_id
 
-    def set_id2(self, agents):
+    def set_key(self, agents):
         i = 0
-        for _, agent in agents.items():
+        for key, agent in agents.items():
             if agent['id'] == self.self_id:
-                self.self_id = i
+                self.self_key = i
                 break
             i += 1
 
@@ -80,7 +82,7 @@ class World:
             agent = Agent()
             agent.set_data(agents_dict[key])
             self.M_agents.append(agent)
-        self.set_id2(agents_dict)
+        self.set_key(agents_dict)
 
         self.M_ball = Ball()
         self.M_ball.set_data(msg.world['ball'])
@@ -90,7 +92,7 @@ class World:
             self.M_agents.pop()
 
     def self(self) -> Agent:
-        return self.M_agents[self.self_id]
+        return self.M_agents[self.self_key]
 
     def our_players(self) -> list:
         return [agent for agent in self.M_agents if agent.team_id == self.self().team_id]

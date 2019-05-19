@@ -9,9 +9,10 @@ class GoToPoint(Bhv):
         self.min_dist: float = min_dist
 
     def execute(self, agent: Agent) -> dict:
-        r = Vector2D(0,0)
-        if agent.pos().dist(self.target) >= self.min_dist:
-            r = self.target - agent.pos()
+        if agent.pos().dist(self.target) < self.min_dist:
+            return self.make_action_dict(Vector2D(0, 0))
+        r = self.target - agent.pos()
+        print("dist: {}, min_dist: {}".format(agent.pos().dist(self.target), self.min_dist))
         r = r.scale(self.pow / r.r())
         return self.make_action_dict(r)
 

@@ -22,11 +22,25 @@ class PlayerAgent(Agent):
         self.kickable_r = Conf.kick_able_r
 
     def update_next(self):
+        stop_mode = False
+        pow = Vector2D(0, 0)
+        r_decay = Vector2D(0, 0) - self.vel.scale(self.decay)
         if self.pow_type == "move":
             if self.pow.r() > 1:
                 self.pow = self.pow.scale(1 / self.pow.r())
-            self.acc = max_r(self.max_acc, self.acc + self.pow.scale(0.25))
-        self.vel = max_r(self.max_vel, self.vel + self.acc - self.vel.scale(self.decay))
+            pow = self.pow
+        self.acc = max_r(self.max_acc, self.acc + pow.scale(1))
+        if self.acc.r() < self.vel.scale(self.decay).r():
+            self.acc = Vector2D(0, 0) if self.vel.r() == 0 else r_decay
+            stop_mode = True
+        else:
+            self.acc = self.acc - self.vel.scale(self.decay)
+        if stop_mode and self.vel.r() < self.acc.r():
+            self.vel = Vector2D(0, 0)
+        else:
+            self.vel = max_r(self.max_vel, self.vel + self.acc)
+        if self.vel.r() < 1:
+            self.vel = Vector2D(0, 0)
         self.next_pos += self.vel
 
 
