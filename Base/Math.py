@@ -48,6 +48,14 @@ class Vector2D:
     def scale(self, k):
         return Vector2D(self.i * k, self.j * k)
 
+    # def __mul__(self, other):
+    #     return Vector2D(self.i*other.i, self.j*other.j)
+
+    def mirror(self, origin):
+        # 2origin - self
+        self.i = origin.i * 2 - self.i
+        self.j = origin.j * 2 - self.j
+
 
 class Line2D:
     def __init__(self, pos1: Vector2D, pos2: Vector2D):

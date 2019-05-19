@@ -5,6 +5,7 @@ from Base.Message import *
 from Games.Soccer.Client.Python.World import *
 import Games.Soccer.Client.Python.main_player as main
 import signal
+
 is_run = True
 
 
@@ -55,8 +56,12 @@ def run():
             # world.print()
 
             action = main.get_action(world)
-            # check_action_side(actoin,)
+            check_action_side(action, world)
 
             sock.sendto(MessageClientAction(string_action=action).build(), server_address)
             world.clear()
 
+def check_action_side(actoin, world):
+    if world.self().team_id == 2:
+        field = Field()
+        actoin['pow'].mirror(Vector2D(0, actoin['pow'].j))

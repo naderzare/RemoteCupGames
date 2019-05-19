@@ -22,8 +22,8 @@ def do_kick(wm: World):
 
 
 def get_action(wm: World):
-    if wm.self_id != 1:
-        return do_move2(wm)
+    # if wm.self_id != 1:
+    #     return do_move2(wm)
     if is_kickable(wm.self(), wm):
-        return do_move(wm)
-    return do_kick(wm)
+        return do_kick(wm)
+    return do_move(wm)

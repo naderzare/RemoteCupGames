@@ -1,5 +1,6 @@
 from Base.Math import Vector2D, Line2D
 from copy import copy
+from Conf import Server_Soccer_Conf as Conf
 
 
 class Object:
@@ -28,6 +29,11 @@ class Object:
 
         return obj_pos
 
+    def mirror(self):
+        field = Field()
+        self.M_pos.mirror(Vector2D(field.center.i, self.pos().j))
+        self.M_vel.mirror(Vector2D(0, self.vel().j))
+
     def set_data(self, data: dict):
         self.M_pos = Vector2D(data['pos'][0], data['pos'][1])
         self.M_vel = Vector2D(data['vel'][0], data['vel'][1])
@@ -53,6 +59,12 @@ class Agent(Object):
     def more_data(self, data: dict):
         self.team_id = data['team_id']
         self.kickable_r = data['kickable_r']
+
+
+class Field:
+    def __init__(self):
+        self.center: Vector2D = Vector2D(Conf.max_i / 2, Conf.max_j / 2)
+        self.field: Vector2D = Vector2D(Conf.max_i, Conf.max_j)
 
 
 class World:
@@ -87,6 +99,9 @@ class World:
         self.M_ball = Ball()
         self.M_ball.set_data(msg.world['ball'])
 
+        if self.self().team_id == 2:
+            self.normalize_poses()
+
     def clear(self):
         while self.M_agents:
             self.M_agents.pop()
@@ -102,3 +117,11 @@ class World:
 
     def ball(self):
         return self.M_ball
+
+    def cycle(self):
+        return self.M_cycle
+
+    def normalize_poses(self):
+        self.ball().mirror()
+        for i in range(len(self.M_agents)):
+            self.M_agents[i].mirror()
